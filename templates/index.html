@@ -1,15 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Flask Static</title>
-</head>
-<body>
+{% extends "layout.html" %}
+
+{% block body %}
   <form action="/greet" method="get" class="inputForm">
     <input required type="text" autocomplete="off" placeholder="Name" name="name" class="name">
     <input type="submit">
   </form>
-</body>
-</html>
+{% endblock %}
