@@ -3,10 +3,12 @@ from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
+REGISTRANTS = {}
+
 SPORTS = [
   "Kung-fu",
   "Karate",
-  "MuayTay",
+  "Muaytay",
   "Capoeira",
   "Jiujitsu"
 ]
@@ -17,7 +19,14 @@ def index():
 
 @app.route("/register", methods=["POST"])
 def register():
-  if not request.form.get("name") or request.form.get("sport") not in SPORTS:
-    return render_template("failure.html")
+  # Validate name
+  if not name:
+    return render_template("error.html", message="Missing name")
+  if sport not in SPORTS:
+    return render_template("error.html", message="Invalid sport")
+  
+  # Remember registrant
+  REGISTRANTS[name] = sport 
 
-  return render_template("success.html")
+  # Confirm registration
+  return redirect("/registrants")
