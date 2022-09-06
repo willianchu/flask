@@ -4,12 +4,11 @@
   <h1>Register</h1>
   <form action="/register" method="post">
     <input autocomplete="off" autofocus name="name" placeholder="Name" type="text">
-    <select>
+    <select name="sport">
       <option disable selected>Martial Art</option>
-      <option>Kung-fu</option>
-      <option>Karate</option>
-      <option>Judo</option>
-      <option>Capoeira</option>
+      {% for sport in sports %}
+        <option>{{ sport }}</option>
+      {% endfor %}
     </select>
     <input type="submit" value="Register"/>
   </form>
