@@ -7,7 +7,9 @@
   <title>Flask Static</title>
 </head>
 <body>
-  Static Page in Flask  
-  name in arg = {{ name }}
+  <form action="/greet" method="get" class="inputForm">
+    <input type="text" autocomplete="off" placeholder="Name" name="name" class="name">
+    <input type="submit">
+  </form>
 </body>
 </html>
