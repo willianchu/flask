@@ -10,11 +10,15 @@
       </tr>
     </thead>
     <tbody>
-      {% for name in registrants %}
+      {% for registrant in registrants %}
         <tr>
-          <td>{{ name }}</td>
-          <td>{{ registrants[name] }}</td>
+          <td>{{ registrant.name }}</td>
+          <td>{{ registrants.sport }}</td>
         </tr>
+          <form action="/deregister" method="post">
+            <input type="hidden" name="id" value="{{ registrant.id }}">
+            <input type="submit" value="Deregister">
+          </form>
       {% endfor %}
     </tbody>
   </table>

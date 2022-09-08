@@ -1,10 +1,21 @@
 # from crypt import methods
-from email import message
-from flask import Flask, redirect, render_template, request
+
+import os
+import re
+
+from flask import Flask, render_template, request
+from flask_mail import Mail, Message
 
 app = Flask(__name__)
 
-REGISTRANTS = {}
+# google accounts answer 6010255
+app.config["MAIL_DEFAULT_SENDER"] = os.environ["MAIL_DEFAULT_SENDER"]
+app.config["MAIL_PASSWORD"] = os.environ["MAIL_PASSWORD"]
+app.config["MAIL_PORT"] = 587
+app.config["MAIL_SERVER"] = "smtp.gmail.com"
+app.config["MAIL_USE_TLS"] = True
+app.config["MAIL_USERNAME"] = os.environ["MAIL_USERNAME"]
+mail = Mail(app)
 
 SPORTS = [
   "Kung-fu",
@@ -18,25 +29,30 @@ SPORTS = [
 def index():
   return render_template("index.html", sports=SPORTS)
 
+@app.route("/deregister", methods=["POST"])
+def deregister():
+  id = request.form.get("id")
+  if id:
+    db.execute("DELETE FROM registrants WHERE id = ?", id)
+  return redirect("/registrants")
+
 @app.route("/register", methods=["POST"])
 def register():
-  # Validate name
+  # Validate submission
   name = request.form.get("name")
-  if not name:
-    return render_template("error.html", message="Missing name")
-  
+  email = request.form.get("email")
   sport = request.form.get("sport")
-  if not sport:
-    return render_template("error.html", message="Missing sport")
-  if sport not in SPORTS:
-    return render_template("error.html", message="Invalid sport")
+  if not name or not email or sport not in SPORTS:
+    return render_template("failure.html")
   
   # Remember registrant
-  REGISTRANTS[name] = sport 
+  message = Message("You're registered!", recipients=[email])
+  mail.send(message)
 
   # Confirm registration
-  return redirect("/registrants")
+  return render_template("success.html")
 
 @app.route("/registrants")
 def registrants():
-  return render_template("registrants.html", registrants=REGISTRANTS)
+  registrants = db.execute("SELECT * FROM registrants")
+  return render_template("registrants.html", registrants=registrants)
